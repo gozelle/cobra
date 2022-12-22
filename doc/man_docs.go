@@ -24,9 +24,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
+	
 	"github.com/cpuguy83/go-md2man/v2/md2man"
-	"github.com/spf13/cobra"
+	"github.com/gozelle/cobra"
 	"github.com/spf13/pflag"
 )
 
@@ -62,7 +62,7 @@ func GenManTreeFromOpts(cmd *cobra.Command, opts GenManTreeOptions) error {
 	if header.Section != "" {
 		section = header.Section
 	}
-
+	
 	separator := "_"
 	if opts.CommandSeparator != "" {
 		separator = opts.CommandSeparator
@@ -74,7 +74,7 @@ func GenManTreeFromOpts(cmd *cobra.Command, opts GenManTreeOptions) error {
 		return err
 	}
 	defer f.Close()
-
+	
 	headerCopy := *header
 	return GenMan(cmd, &headerCopy, f)
 }
@@ -109,7 +109,7 @@ func GenMan(cmd *cobra.Command, header *GenManHeader, w io.Writer) error {
 	if err := fillHeader(header, cmd.CommandPath(), cmd.DisableAutoGenTag); err != nil {
 		return err
 	}
-
+	
 	b := genMan(cmd, header)
 	_, err := w.Write(md2man.Render(b))
 	return err
@@ -145,7 +145,7 @@ func manPreamble(buf io.StringWriter, header *GenManHeader, cmd *cobra.Command, 
 	if len(description) == 0 {
 		description = cmd.Short
 	}
-
+	
 	cobra.WriteStringAndCheck(buf, fmt.Sprintf(`%% "%s" "%s" "%s" "%s" "%s"
 # NAME
 `, header.Title, header.Section, header.date, header.Source, header.Manual))
@@ -202,12 +202,12 @@ func manPrintOptions(buf io.StringWriter, command *cobra.Command) {
 func genMan(cmd *cobra.Command, header *GenManHeader) []byte {
 	cmd.InitDefaultHelpCmd()
 	cmd.InitDefaultHelpFlag()
-
+	
 	// something like `rootcmd-subcmd1-subcmd2`
 	dashCommandName := strings.ReplaceAll(cmd.CommandPath(), " ", "-")
-
+	
 	buf := new(bytes.Buffer)
-
+	
 	manPreamble(buf, header, cmd, dashCommandName)
 	manPrintOptions(buf, cmd)
 	if len(cmd.Example) > 0 {

@@ -27,7 +27,7 @@ func genFishComp(buf io.StringWriter, name string, includeDesc bool) {
 	nameForVar := name
 	nameForVar = strings.ReplaceAll(nameForVar, "-", "_")
 	nameForVar = strings.ReplaceAll(nameForVar, ":", "_")
-
+	
 	compCmd := ShellCompRequestCmd
 	if !includeDesc {
 		compCmd = ShellCompNoDescRequestCmd
@@ -60,7 +60,7 @@ function __%[1]s_perform_completion
 
     # Some programs may output extra empty lines after the directive.
     # Let's ignore them or else it will break completion.
-    # Ref: https://github.com/spf13/cobra/issues/1279
+    # Ref: https://github.com/gozelle/cobra/issues/1279
     for line in $results[-1..1]
         if test (string trim -- $line) = ""
             # Found an empty line, remove it
@@ -229,6 +229,6 @@ func (c *Command) GenFishCompletionFile(filename string, includeDesc bool) error
 		return err
 	}
 	defer outFile.Close()
-
+	
 	return c.GenFishCompletion(outFile, includeDesc)
 }

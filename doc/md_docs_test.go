@@ -20,8 +20,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/spf13/cobra"
+	
+	"github.com/gozelle/cobra"
 )
 
 func TestGenMdDoc(t *testing.T) {
@@ -31,7 +31,7 @@ func TestGenMdDoc(t *testing.T) {
 		t.Fatal(err)
 	}
 	output := buf.String()
-
+	
 	checkStringContains(t, output, echoCmd.Long)
 	checkStringContains(t, output, echoCmd.Example)
 	checkStringContains(t, output, "boolone")
@@ -49,7 +49,7 @@ func TestGenMdDocWithNoLongOrSynopsis(t *testing.T) {
 		t.Fatal(err)
 	}
 	output := buf.String()
-
+	
 	checkStringContains(t, output, dummyCmd.Example)
 	checkStringContains(t, output, dummyCmd.Short)
 	checkStringContains(t, output, "Options inherited from parent commands")
@@ -68,7 +68,7 @@ func TestGenMdNoHiddenParents(t *testing.T) {
 		t.Fatal(err)
 	}
 	output := buf.String()
-
+	
 	checkStringContains(t, output, echoCmd.Long)
 	checkStringContains(t, output, echoCmd.Example)
 	checkStringContains(t, output, "boolone")
@@ -82,13 +82,13 @@ func TestGenMdNoHiddenParents(t *testing.T) {
 func TestGenMdNoTag(t *testing.T) {
 	rootCmd.DisableAutoGenTag = true
 	defer func() { rootCmd.DisableAutoGenTag = false }()
-
+	
 	buf := new(bytes.Buffer)
 	if err := GenMarkdown(rootCmd, buf); err != nil {
 		t.Fatal(err)
 	}
 	output := buf.String()
-
+	
 	checkStringOmits(t, output, "Auto generated")
 }
 
@@ -99,11 +99,11 @@ func TestGenMdTree(t *testing.T) {
 		t.Fatalf("Failed to create tmpdir: %v", err)
 	}
 	defer os.RemoveAll(tmpdir)
-
+	
 	if err := GenMarkdownTree(c, tmpdir); err != nil {
 		t.Fatalf("GenMarkdownTree failed: %v", err)
 	}
-
+	
 	if _, err := os.Stat(filepath.Join(tmpdir, "do.md")); err != nil {
 		t.Fatalf("Expected file 'do.md' to exist")
 	}
@@ -116,7 +116,7 @@ func BenchmarkGenMarkdownToFile(b *testing.B) {
 	}
 	defer os.Remove(file.Name())
 	defer file.Close()
-
+	
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		if err := GenMarkdown(rootCmd, file); err != nil {

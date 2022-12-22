@@ -32,7 +32,7 @@ func main() {
 Cobra-CLI is its own program that will create your application and add any
 commands you want. It's the easiest way to incorporate Cobra into your application.
 
-For complete details on using the Cobra generator, please refer to [The Cobra-CLI Generator README](https://github.com/spf13/cobra-cli/blob/main/README.md)
+For complete details on using the Cobra generator, please refer to [The Cobra-CLI Generator README](https://github.com/gozelle/cobra-cli/blob/main/README.md)
 
 ## Using the Cobra Library
 
@@ -76,7 +76,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/gozelle/cobra"
 	"github.com/spf13/viper"
 )
 
@@ -171,7 +171,7 @@ package cmd
 import (
   "fmt"
 
-  "github.com/spf13/cobra"
+  "github.com/gozelle/cobra"
 )
 
 func init() {
@@ -198,7 +198,7 @@ package cmd
 import (
   "fmt"
 
-  "github.com/spf13/cobra"
+  "github.com/gozelle/cobra"
 )
 
 func init() {
@@ -397,7 +397,7 @@ import (
   "fmt"
   "strings"
 
-  "github.com/spf13/cobra"
+  "github.com/gozelle/cobra"
 )
 
 func main() {
@@ -574,7 +574,7 @@ package main
 import (
   "fmt"
 
-  "github.com/spf13/cobra"
+  "github.com/gozelle/cobra"
 )
 
 func main() {

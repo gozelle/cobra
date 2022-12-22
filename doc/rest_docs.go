@@ -23,8 +23,8 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/spf13/cobra"
+	
+	"github.com/gozelle/cobra"
 )
 
 func printOptionsReST(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
@@ -36,7 +36,7 @@ func printOptionsReST(buf *bytes.Buffer, cmd *cobra.Command, name string) error 
 		flags.PrintDefaults()
 		buf.WriteString("\n")
 	}
-
+	
 	parentFlags := cmd.InheritedFlags()
 	parentFlags.SetOutput(buf)
 	if parentFlags.HasAvailableFlags() {
@@ -62,17 +62,17 @@ func GenReST(cmd *cobra.Command, w io.Writer) error {
 func GenReSTCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string, string) string) error {
 	cmd.InitDefaultHelpCmd()
 	cmd.InitDefaultHelpFlag()
-
+	
 	buf := new(bytes.Buffer)
 	name := cmd.CommandPath()
-
+	
 	short := cmd.Short
 	long := cmd.Long
 	if len(long) == 0 {
 		long = short
 	}
 	ref := strings.ReplaceAll(name, " ", "_")
-
+	
 	buf.WriteString(".. _" + ref + ":\n\n")
 	buf.WriteString(name + "\n")
 	buf.WriteString(strings.Repeat("-", len(name)) + "\n\n")
@@ -80,17 +80,17 @@ func GenReSTCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string, str
 	buf.WriteString("Synopsis\n")
 	buf.WriteString("~~~~~~~~\n\n")
 	buf.WriteString("\n" + long + "\n\n")
-
+	
 	if cmd.Runnable() {
 		buf.WriteString(fmt.Sprintf("::\n\n  %s\n\n", cmd.UseLine()))
 	}
-
+	
 	if len(cmd.Example) > 0 {
 		buf.WriteString("Examples\n")
 		buf.WriteString("~~~~~~~~\n\n")
 		buf.WriteString(fmt.Sprintf("::\n\n%s\n\n", indentString(cmd.Example, "  ")))
 	}
-
+	
 	if err := printOptionsReST(buf, cmd, name); err != nil {
 		return err
 	}
@@ -108,10 +108,10 @@ func GenReSTCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string, str
 				}
 			})
 		}
-
+		
 		children := cmd.Commands()
 		sort.Sort(byName(children))
-
+		
 		for _, child := range children {
 			if !child.IsAvailableCommand() || child.IsAdditionalHelpTopicCommand() {
 				continue
@@ -151,7 +151,7 @@ func GenReSTTreeCustom(cmd *cobra.Command, dir string, filePrepender func(string
 			return err
 		}
 	}
-
+	
 	basename := strings.ReplaceAll(cmd.CommandPath(), " ", "_") + ".rst"
 	filename := filepath.Join(dir, basename)
 	f, err := os.Create(filename)
@@ -159,7 +159,7 @@ func GenReSTTreeCustom(cmd *cobra.Command, dir string, filePrepender func(string
 		return err
 	}
 	defer f.Close()
-
+	
 	if _, err := io.WriteString(f, filePrepender(filename)); err != nil {
 		return err
 	}

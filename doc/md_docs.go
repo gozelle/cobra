@@ -23,8 +23,8 @@ import (
 	"sort"
 	"strings"
 	"time"
-
-	"github.com/spf13/cobra"
+	
+	"github.com/gozelle/cobra"
 )
 
 func printOptions(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
@@ -35,7 +35,7 @@ func printOptions(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
 		flags.PrintDefaults()
 		buf.WriteString("```\n\n")
 	}
-
+	
 	parentFlags := cmd.InheritedFlags()
 	parentFlags.SetOutput(buf)
 	if parentFlags.HasAvailableFlags() {
@@ -55,26 +55,26 @@ func GenMarkdown(cmd *cobra.Command, w io.Writer) error {
 func GenMarkdownCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string) string) error {
 	cmd.InitDefaultHelpCmd()
 	cmd.InitDefaultHelpFlag()
-
+	
 	buf := new(bytes.Buffer)
 	name := cmd.CommandPath()
-
+	
 	buf.WriteString("## " + name + "\n\n")
 	buf.WriteString(cmd.Short + "\n\n")
 	if len(cmd.Long) > 0 {
 		buf.WriteString("### Synopsis\n\n")
 		buf.WriteString(cmd.Long + "\n\n")
 	}
-
+	
 	if cmd.Runnable() {
 		buf.WriteString(fmt.Sprintf("```\n%s\n```\n\n", cmd.UseLine()))
 	}
-
+	
 	if len(cmd.Example) > 0 {
 		buf.WriteString("### Examples\n\n")
 		buf.WriteString(fmt.Sprintf("```\n%s\n```\n\n", cmd.Example))
 	}
-
+	
 	if err := printOptions(buf, cmd, name); err != nil {
 		return err
 	}
@@ -92,10 +92,10 @@ func GenMarkdownCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string)
 				}
 			})
 		}
-
+		
 		children := cmd.Commands()
 		sort.Sort(byName(children))
-
+		
 		for _, child := range children {
 			if !child.IsAvailableCommand() || child.IsAdditionalHelpTopicCommand() {
 				continue
@@ -137,7 +137,7 @@ func GenMarkdownTreeCustom(cmd *cobra.Command, dir string, filePrepender, linkHa
 			return err
 		}
 	}
-
+	
 	basename := strings.ReplaceAll(cmd.CommandPath(), " ", "_") + ".md"
 	filename := filepath.Join(dir, basename)
 	f, err := os.Create(filename)
@@ -145,7 +145,7 @@ func GenMarkdownTreeCustom(cmd *cobra.Command, dir string, filePrepender, linkHa
 		return err
 	}
 	defer f.Close()
-
+	
 	if _, err := io.WriteString(f, filePrepender(filename)); err != nil {
 		return err
 	}

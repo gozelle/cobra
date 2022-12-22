@@ -33,7 +33,7 @@ func genBashComp(buf io.StringWriter, name string, includeDesc bool) {
 	if !includeDesc {
 		compCmd = ShellCompNoDescRequestCmd
 	}
-
+	
 	WriteStringAndCheck(buf, fmt.Sprintf(`# bash completion V2 for %-36[1]s -*- shell-script -*-
 
 __%[1]s_debug()
@@ -208,7 +208,7 @@ __%[1]s_handle_completion_types() {
         # Type: menu-complete/menu-complete-backward and insert-completions
         # If the user requested inserting one completion at a time, or all
         # completions at once on the command-line we must remove the descriptions.
-        # https://github.com/spf13/cobra/issues/1508
+        # https://github.com/gozelle/cobra/issues/1508
         local tab=$'\t' comp
         while IFS='' read -r comp; do
             [[ -z $comp ]] && continue
@@ -371,7 +371,7 @@ func (c *Command) GenBashCompletionFileV2(filename string, includeDesc bool) err
 		return err
 	}
 	defer outFile.Close()
-
+	
 	return c.GenBashCompletionV2(outFile, includeDesc)
 }
 

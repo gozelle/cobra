@@ -21,8 +21,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"github.com/spf13/cobra"
+	
+	"github.com/gozelle/cobra"
 	"github.com/spf13/pflag"
 	"gopkg.in/yaml.v3"
 )
@@ -66,7 +66,7 @@ func GenYamlTreeCustom(cmd *cobra.Command, dir string, filePrepender, linkHandle
 			return err
 		}
 	}
-
+	
 	basename := strings.ReplaceAll(cmd.CommandPath(), " ", "_") + ".yaml"
 	filename := filepath.Join(dir, basename)
 	f, err := os.Create(filename)
@@ -74,7 +74,7 @@ func GenYamlTreeCustom(cmd *cobra.Command, dir string, filePrepender, linkHandle
 		return err
 	}
 	defer f.Close()
-
+	
 	if _, err := io.WriteString(f, filePrepender(filename)); err != nil {
 		return err
 	}
@@ -93,21 +93,21 @@ func GenYaml(cmd *cobra.Command, w io.Writer) error {
 func GenYamlCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string) string) error {
 	cmd.InitDefaultHelpCmd()
 	cmd.InitDefaultHelpFlag()
-
+	
 	yamlDoc := cmdDoc{}
 	yamlDoc.Name = cmd.CommandPath()
-
+	
 	yamlDoc.Synopsis = forceMultiLine(cmd.Short)
 	yamlDoc.Description = forceMultiLine(cmd.Long)
-
+	
 	if cmd.Runnable() {
 		yamlDoc.Usage = cmd.UseLine()
 	}
-
+	
 	if len(cmd.Example) > 0 {
 		yamlDoc.Example = cmd.Example
 	}
-
+	
 	flags := cmd.NonInheritedFlags()
 	if flags.HasFlags() {
 		yamlDoc.Options = genFlagResult(flags)
@@ -116,7 +116,7 @@ func GenYamlCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string) str
 	if flags.HasFlags() {
 		yamlDoc.InheritedOptions = genFlagResult(flags)
 	}
-
+	
 	if hasSeeAlso(cmd) {
 		result := []string{}
 		if cmd.HasParent() {
@@ -133,13 +133,13 @@ func GenYamlCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string) str
 		}
 		yamlDoc.SeeAlso = result
 	}
-
+	
 	final, err := yaml.Marshal(&yamlDoc)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
+	
 	if _, err := w.Write(final); err != nil {
 		return err
 	}
@@ -148,7 +148,7 @@ func GenYamlCustom(cmd *cobra.Command, w io.Writer, linkHandler func(string) str
 
 func genFlagResult(flags *pflag.FlagSet) []cmdOption {
 	var result []cmdOption
-
+	
 	flags.VisitAll(func(flag *pflag.Flag) {
 		// Todo, when we mark a shorthand is deprecated, but specify an empty message.
 		// The flag.ShorthandDeprecated is empty as the shorthand is deprecated.
@@ -170,6 +170,6 @@ func genFlagResult(flags *pflag.FlagSet) []cmdOption {
 			result = append(result, opt)
 		}
 	})
-
+	
 	return result
 }

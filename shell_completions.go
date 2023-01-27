@@ -25,6 +25,16 @@ func (c *Command) MarkFlagRequired(name string) error {
 	return MarkFlagRequired(c.Flags(), name)
 }
 
+func (c *Command) MarkFlagsRequired(names ...string) error {
+	for _, v := range names {
+		err := MarkFlagRequired(c.Flags(), v)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // MarkPersistentFlagRequired instructs the various shell completion implementations to
 // prioritize the named persistent flag when performing completion,
 // and causes your command to report an error if invoked without the flag.

@@ -10,87 +10,99 @@ import (
 	"time"
 )
 
-var logger *Logger
+var log Logger
 
 func init() {
-	logger = NewLogger()
+	log = NewLogger()
 }
 
-func WithModule(module string) *Logger {
-	return logger.WithModule(module)
+func WithModule(module string) Logger {
+	return log.WithModule(module)
 }
 
 func Success(msgs ...string) {
-	logger.Success(msgs...)
+	log.Success(msgs...)
 }
 
 func Info(msgs ...string) {
-	logger.Info(msgs...)
+	log.Info(msgs...)
 }
 
 func Error(msgs ...string) {
-	logger.Error(msgs...)
+	log.Error(msgs...)
 }
 
 func Warn(msgs ...string) {
-	logger.Warn(msgs...)
+	log.Warn(msgs...)
 }
 
 func Debug(msgs ...string) {
-	logger.Debug(msgs...)
+	log.Debug(msgs...)
 }
 
 func Fatal(msgs ...string) {
-	logger.Fatal(msgs...)
+	log.Fatal(msgs...)
 }
 
 func Progress(fields ...*progress.Field) {
-	logger.Progress(fields...)
+	log.Progress(fields...)
 }
 
 func NewLine() {
-	logger.NewLine()
+	log.NewLine()
 }
 
-func NewLogger() *Logger {
-	return &Logger{}
+type Logger interface {
+	WithModule(module string) *logger
+	Success(msgs ...string)
+	Info(msgs ...string)
+	Error(msgs ...string)
+	Warn(msgs ...string)
+	Debug(msgs ...string)
+	Fatal(msgs ...string)
+	Progress(fields ...*progress.Field)
+	NewLine()
 }
 
-type Logger struct {
+func NewLogger() Logger {
+	return &logger{}
+}
+
+type logger struct {
 	module string
 }
 
-func (l *Logger) WithModule(module string) *Logger {
+func (l *logger) WithModule(module string) *logger {
 	l.module = module
 	return l
 }
 
-func (l *Logger) Success(msgs ...string) {
+func (l *logger) Success(msgs ...string) {
 	l.print(color.GreenString, msgs...)
 }
 
-func (l *Logger) Info(msgs ...string) {
+func (l *logger) Info(msgs ...string) {
 	l.print(color.CyanString, msgs...)
 }
 
-func (l *Logger) Error(msgs ...string) {
+func (l *logger) Error(msgs ...string) {
 	l.print(color.RedString, msgs...)
 }
 
-func (l *Logger) Warn(msgs ...string) {
+func (l *logger) Warn(msgs ...string) {
 	l.print(color.YellowString, msgs...)
 }
 
-func (l *Logger) Debug(msgs ...string) {
+func (l *logger) Debug(msgs ...string) {
 	l.print(color.BlueString, msgs...)
 }
 
-func (l *Logger) Fatal(msgs ...string) {
+func (l *logger) Fatal(msgs ...string) {
 	l.print(color.HiRedString, msgs...)
 	os.Exit(1)
 }
 
-func (l *Logger) Progress(fields ...*progress.Field) {
+func (l *logger) Progress(fields ...*progress.Field) {
 	var f []string
 	var vals []any
 	for _, v := range fields {
@@ -103,21 +115,21 @@ func (l *Logger) Progress(fields ...*progress.Field) {
 	}
 }
 
-func (l *Logger) NewLine() {
+func (l *logger) NewLine() {
 	fmt.Printf("\n")
 }
 
-func (l *Logger) now() string {
+func (l *logger) now() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }
 
 var emojiRegex = regexp.MustCompile(`[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1F018}-\x{1F270}\x{1F300}-\x{1F5FF}\x{1F1E6}-\x{1F1FF}\x{1F600}-\x{1F64F}\x{1F680}-\x{1F6C5}\x{1F30D}-\x{1F567}]`)
 
-func (l *Logger) isEmoji(str string) bool {
+func (l *logger) isEmoji(str string) bool {
 	return emojiRegex.MatchString(str)
 }
 
-func (l *Logger) print(c func(format string, a ...interface{}) string, msgs ...string) {
+func (l *logger) print(c func(format string, a ...interface{}) string, msgs ...string) {
 	
 	if n := len(msgs); n > 0 {
 		if !l.isEmoji(msgs[0]) {

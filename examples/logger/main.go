@@ -30,7 +30,7 @@ func main() {
 	cobra.Warn("🚀", "warn")
 	cobra.Error("🚀", "error")
 	
-	logger = logger.WithModule("begin")
+	logger = logger.WithModule("module")
 	logger.Success("😊", "success")
 	logger.Debug("😊", "debug")
 	logger.Info("😊", "info")

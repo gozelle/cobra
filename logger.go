@@ -147,7 +147,7 @@ func (l *logger) print(c func(format string, a ...interface{}) string, msgs ...s
 	
 	var module string
 	if l.module != "" {
-		module = fmt.Sprintf(" %s ", color.New(color.FgMagenta).Sprintf("[%s]", l.module))
+		module = fmt.Sprintf(" %s ", color.New(color.FgBlack, color.BgWhite).Sprintf("[%s]", l.module))
 	}
 	
 	fmt.Printf("%s %s%s\n",
